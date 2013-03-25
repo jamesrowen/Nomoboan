@@ -5,26 +5,72 @@ body {
   background: url('../img/paper_fibers.png');
 }
 
+.btn {
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+}
+
+.btn-primary {
+  background-image: none;
+  background: rgb(138, 182, 138);
+  color: #444;
+  text-shadow: none;
+}
+
+.btn-primary:hover {
+  background-image: none;
+  background: rgb(138, 182, 138);
+  color: #eee;
+}
+.accordion-toggle {
+  color: #444;
+}
+
+.accordion-toggle:hover {
+  text-decoration: none;
+  color: #eee;
+}
+
+.box {
+  padding: 6px;
+}
+
+hr {
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #eee;
+}
+table {
+  width: 100%;
+}
+
+#addnew {
+  background: rgb(138, 182, 138);
+}
+.accordion-inner {
+  background: #f9f9f9;
+}
+
 /* Custom container */
 .container {
   margin: 0 auto;
   max-width: 1000px;
 }
 .container > hr {
-  margin: 60px 0;
+  margin: 15px 0;
 }
 
 /* Main marketing message and sign up button */
 .jumbotron {
-  margin: 80px 0;
+  margin: 20px 0;
   text-align: center;
 }
 .jumbotron h1 {
-  font-size: 70px;
+  font-size: 60px;
   line-height: 1;
 }
 .jumbotron .lead {
-  font-size: 24px;
+  font-size: 20px;
   line-height: 1.25;
 }
 

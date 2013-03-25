@@ -4,7 +4,7 @@ html(lang="en", ng-app="project")
     meta(charset="utf-8")
     meta(name="author", content="James Rowen")
     meta(name="viewport", content="width=device-width initial-scale=1.0")
-    title Boilerplate
+    title Nomoboan - node + mongo + bootstrap + angular testbed
     
     // Bootstrap
     link(href="css/bootstrap.min.css", rel="stylesheet", media="screen")
@@ -23,7 +23,7 @@ html(lang="en", ng-app="project")
             span.icon-bar
             span.icon-bar
  
-          a.brand(href="#") Boilerplate
+          a.brand(href="#") Nomoboan
  
           // these are collapsed at 940px or less
           .nav-collapse.collapse
@@ -43,14 +43,14 @@ html(lang="en", ng-app="project")
           :markdown
             ### (**no**de-**mo**ngo-**bo**otstrap-**an**gular)
 
-            A project seed integrating these technologies and more, plus some other goodies. Extensive tutorial and resource list.
+            A project seed and testbed for experimenting with various javascript frameworks and libraries.
         p
-          a.btn.btn-success.btn-large(href="#") Do nothing
+          a.btn.btn-primary.btn-large(href="#") Do nothing
 
       hr
 
       .row-fluid
-        .span4
+        .span4.box
           h1 Stack
           ul.unstyled
             li
@@ -65,36 +65,33 @@ html(lang="en", ng-app="project")
               a(href="http://jade-lang.com/") jade
             li
               a(href="http://twitter.github.com/bootstrap/") bootstrap
-        .span4
+        .span4.box
           h1 Docs
-          p Coming soon
-        .span4
-          h1 Cool Stuff
-          p asdf
+          | Installation:
+          ol
+            li Install node.js and mongoDB.
+            li git clone https://github.com/jamesrowen/Nomoboan.git
+            li Run mongod (default port 27017).
+            li From Nomoboan directory, run "node app".
+            li Open browser to http://localhost:8080
+        .span4.box
+          h1 Todo
+          ul
+            li form validation
+            li add pagination and standard height
+            li edit contacts
       
       hr
 
-      .row-fluid(ng-controller="ContactsCtrl")
-        .span3
-          form(ng-submit="addContact()")
-            legend Enter a Contact
-            label Name
-            input(type="text", name="name", placeholder="Joe Shmoe", ng-model="form.name")
-            br
-            h4 Hello {{form.name}}
-            label Email
-            input(type="text", name="email", placeholder="joeshmoe@gmail.com", ng-model="form.email")
-            br
-            button.btn.btn-primary(type="submit") Submit
-        .span9
-          h2 Contacts ({{contacts.length}})
-          hr
-          ul
-            li(ng-repeat="contact in contacts") {{contact.name}} - {{contact.email}}
+      .row-fluid.contacts(ng-view)
+      
       hr
           
       footer
-        p &copy; James Rowen 2013
+        p 
+          | &copy; 
+          a(href="mailto:jamesrowen@gmail.com") James Rowen
+          |  2013
 
     script(src="http://code.jquery.com/jquery.js")
     script(src="js/bootstrap.min.js")

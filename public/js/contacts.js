@@ -7,5 +7,6 @@ function ContactsCtrl($scope) {
     $scope.contacts.push({name:$scope.name, email:$scope.email});
     $scope.name = '';
     $scope.email = '';
+    $location.path('/');
   };
 }

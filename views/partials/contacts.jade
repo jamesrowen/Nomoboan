@@ -1,0 +1,50 @@
+.span12
+  h2 Contacts ({{contacts.length}})
+  p
+    input.search-query(type="text", ng-model="search", placeholder="Search")
+  .accordion
+    .accordion-group
+      .accordion-heading#addnew
+        a.accordion-toggle(data-toggle="collapse", data-parent=".accordion", href="#collapseOne") 
+          i.icon-plus-sign
+          | &nbsp;&nbsp;Add New Contact
+      .accordion-body.collapse.out#collapseOne
+        .accordion-inner
+          form
+            table
+              tbody
+                tr
+                  td Name
+                  td
+                    input(type="text", name="name", placeholder="Joe Shmoe", ng-model="form.name")
+                  td Email
+                  td
+                    input(type="text", name="email", placeholder="joeshmoe@gmail.com", ng-model="form.email")
+                tr
+                  td Phone
+                  td
+                    input(type="text", name="phone", placeholder="775-123-4567", ng-model="form.phone")
+                  td Location
+                  td
+                    input(type="text", name="location", placeholder="Austin, TX", ng-model="form.location")
+                tr
+                  td
+                    button.btn.btn-primary(ng-click="addContact()") Submit
+  table.table.table-striped
+    thead
+      tr
+        th Name
+        th Email
+        th Phone
+        th Location
+        th
+    tbody
+      tr(ng-repeat="contact in contacts | filter:search | orderBy:'name'")
+        td {{contact.name}}
+        td 
+          a(href="mailto:{{contact.email}}") {{contact.email}}
+        td {{contact.phone}}
+        td {{contact.location}}
+        td
+          a(ng-click="delete(contact._id, $index)")
+            i.icon-remove-sign
