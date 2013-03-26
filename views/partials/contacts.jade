@@ -40,11 +40,22 @@
         th
     tbody
       tr(ng-repeat="contact in contacts | filter:search | orderBy:'name'")
-        td {{contact.name}}
-        td 
-          a(href="mailto:{{contact.email}}") {{contact.email}}
-        td {{contact.phone}}
-        td {{contact.location}}
+        td(ng-dblclick="edit(contact, 'name')")
+          span(ng-hide="contact.edit=='name'") {{contact.name}}
+          form(ng-show="contact.edit=='name'", ng-submit="update(contact)")
+            input(ng-model="contact.name")
+        td(ng-dblclick="edit(contact, 'email')")
+          span(ng-hide="contact.edit=='email'") {{contact.email}}
+          form(ng-show="contact.edit=='email'", ng-submit="update(contact)")
+            input(ng-model="contact.email")
+        td(ng-dblclick="edit(contact, 'phone')")
+          span(ng-hide="contact.edit=='phone'") {{contact.phone}}
+          form(ng-show="contact.edit=='phone'", ng-submit="update(contact)")
+            input(ng-model="contact.phone")
+        td(ng-dblclick="edit(contact, 'location')")
+          span(ng-hide="contact.edit=='location'") {{contact.location}}
+          form(ng-show="contact.edit=='location'", ng-submit="update(contact)")
+            input(ng-model="contact.location")
         td
-          a(ng-click="delete(contact._id, $index)")
+          a(ng-click="delete(contact._id)")
             i.icon-remove-sign

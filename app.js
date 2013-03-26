@@ -57,10 +57,18 @@ app.post('/api/addcontact', function(req, res) {
     //post.sha = sha.digest('hex');
     
     collection.insert(req.body, function(err, docs){
-        res.json(err ? false : true);
-        console.log(docs);
+        res.json(err ? false : docs[0]);
     });
 }); 
+
+app.post('/api/updatecontact/:id', function(req, res) {
+    collection.update({ _id: BSON.ObjectID(req.params.id) }, req.body, {safe:true},
+        function(err, docs) {
+            if (err) console.warn(err.message);
+            else console.log('successfully updated');
+            res.json(err ? false : docs[0]);
+      });
+});  
 
 app.post('/api/deletecontact/:id', function(req, res) {    
     collection.remove({ _id: BSON.ObjectID(req.params.id) }, function(err, docs) {
