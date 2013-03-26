@@ -8,14 +8,23 @@ var MongoClient = require('mongodb').MongoClient,
     BSON = require('mongodb').BSONPure;
 
     
-// Express Configuration
+// Node/Express Configuration
 //--------------------------------------------------------------------------
-app.set('view engine', 'jade');
-app.set('view options', { layout: false });
-// this allows static files in the /public directory to be served automatically
-app.use(express.static(__dirname+'/public'));
-app.use(express.bodyParser());
-app.listen(8080);
+app.configure(function(){
+    app.set('view engine', 'jade');
+    app.set('view options', { layout: false });
+    // this allows static files in /public to be served automatically
+    app.use(express.static(__dirname+'/public'));
+    app.use(express.bodyParser());
+});
+
+app.configure('development', function(){
+  // TODO: use local mongo instance
+});
+
+app.configure('production', function(){
+  // TODO: use mongolab api
+});
 
 
 // Mongo Connection
@@ -75,3 +84,8 @@ app.post('/api/deletecontact/:id', function(req, res) {
         res.json(err ? false : true);
     });
 });   
+
+// Start the server
+app.listen(8080, function(){
+  console.log("server listening on port %d in %s mode", this.address().port, app.settings.env);
+});
