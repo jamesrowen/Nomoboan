@@ -11,9 +11,8 @@ Usage:
 <ol>
 	<li>Install node.js</li>
 	<li>git clone https://github.com/jamesrowen/Nomoboan.git</li>
-	<li>Fill in DB credentials in config.js</li>
 	<li>Run "node app" from /nomoboan</li>
-	<li>Browse to localhost:8080</li>
+	<li>Browse to localhost:1234</li>
 </ol>
 
 <p>More docs coming soon.</p>
