@@ -39,6 +39,7 @@
         th Location
         th
     tbody
+      // TODO: fix this ugliness, make a directive
       tr(ng-repeat="contact in contacts | filter:search | orderBy:'name'")
         td(ng-dblclick="edit(contact, 'name')")
           span(ng-hide="contact.edit=='name'") {{contact.name}}

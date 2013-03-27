@@ -1,8 +1,15 @@
+// services
+//---------
 angular.module('project', []).
 	config(function($routeProvider) {
     $routeProvider.
-      when('/', {controller:ContactsCtrl, templateUrl:'partials/contacts'});
+      when('/', {controller:ContactsCtrl, templateUrl:'partials/contacts'}).
+      otherwise({redirectTo:'/'});
 	});
+
+
+// controllers
+//------------
 
 function ContactsCtrl($scope, $http, $location) {
   $http.get('/api/contacts').
@@ -39,36 +46,15 @@ function ContactsCtrl($scope, $http, $location) {
   };
  
   $scope.update = function(contact) {
-    $http.post('/api/updatecontact/' + contact._id, contact).
+    $http.put('/api/updatecontact/' + contact._id, contact).
       success(function(data) {
-        for (var i=0; i < $scope.contacts.length; ++i)
-          if ($scope.contacts[i]._id == contact.id)
-          {
-            $scope.contacts[i] = data;
-            break;
-          }
+        // for (var i=0; i < $scope.contacts.length; ++i)
+          // if ($scope.contacts[i]._id == contact.id)
+          // {
+            // $scope.contacts[i] = data;
+            // break;
+          // }
         contact.edit = '';
       });
   };
 }
-
-// angular.module('mongo', ['ngResource']).
-//     factory('Project', function($resource) {
-//       var Project = $resource('https://api.mongolab.com/api/1/databases' +
-//           '/angularjs/collections/projects/:id',
-//           { apiKey: '4f847ad3e4b08a2eed5f3b54' }, {
-//             update: { method: 'PUT' }
-//           }
-//       );
- 
-//       Project.prototype.update = function(cb) {
-//         return Project.update({id: this._id.$oid},
-//             angular.extend({}, this, {_id:undefined}), cb);
-//       };
- 
-//       Project.prototype.destroy = function(cb) {
-//         return Project.remove({id: this._id.$oid}, cb);
-//       };
- 
-//       return Project;
-//     });

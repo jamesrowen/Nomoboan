@@ -1,91 +1,135 @@
-// Includes
+// includes
 //--------------------------------------------------------------------------
-var express = require('express');
-var app = express();
+var express = require('express'),
+  https = require('https'),
+  mongoose = require('mongoose'),
+  config = require('./config');
 
 var MongoClient = require('mongodb').MongoClient,
     Server = require('mongodb').Server,
     BSON = require('mongodb').BSONPure;
 
     
-// Node/Express Configuration
+// start the app
 //--------------------------------------------------------------------------
+console.log('----------');
+mongoose.connect(config.connectionstring);
+    
+
+// node/express init
+//--------------------------------------------------------------------------
+var app = express();
+  
 app.configure(function(){
+    // tells express to compile our jade files to html
     app.set('view engine', 'jade');
     app.set('view options', { layout: false });
     // this allows static files in /public to be served automatically
-    app.use(express.static(__dirname+'/public'));
+    app.use(express.static(__dirname + '/public'));
+    // parses the body of a request into a js object
     app.use(express.bodyParser());
 });
 
 app.configure('development', function(){
-  // TODO: use local mongo instance
+  // TODO: configure dev environment
 });
 
 app.configure('production', function(){
-  // TODO: use mongolab api
+  // TODO: configure prod environment
 });
 
-
-// Mongo Connection
-//--------------------------------------------------------------------------
-var mongoClient = new MongoClient(new Server("localhost", 27017));
-var db;
-var collection;
-mongoClient.open(function(err, client) {
-    if (err)
-        console.log(err);
-    else
-    {
-        console.log("mongo connected");
-        db = mongoClient.db('dev');
-        collection = db.collection('test');
-    }
-});
-
-
-// Routes 
-//--------------------------------------------------------------------------
-app.get('/', function(req, res) {
-    res.render('index');
-});
-
-app.get('/partials/:name', function(req, res) {
-    res.render('partials/' + req.params.name);
-});
-
-app.get('/api/contacts', function(req, res) {
-    collection.find().toArray(function(err, docs) {
-        res.json(docs);
-    });
-});
-
-app.post('/api/addcontact', function(req, res) {
-    //var sha = crypto.createHash('sha1');  
-    //sha.update(JSON.stringify(post));
-    //post.sha = sha.digest('hex');
     
-    collection.insert(req.body, function(err, docs){
-        res.json(err ? false : docs[0]);
+// mongoose init
+//--------------------------------------------------------------------------
+var db = mongoose.connection;
+
+db.on('error', function() {
+  console.log('failed mongo connection :( check config.js\n  user %s\n  url %s\n  db %s\n----------',
+    config.dbuser, config.dburl, config.dbname); 
+});
+
+db.once('open', function() { 
+  console.log('mongo connected!\n  user %s\n  url %s\n  db %s\n----------',
+    config.dbuser, config.dburl, config.dbname);
+
+  var contactSchema = mongoose.Schema({
+    name      : String,
+    email     : String,
+    phone     : String,
+    location  : String
+  });
+
+  var Contact = mongoose.model('Contact', contactSchema);
+
+  // routes 
+  //--------------------------------------------------------------------------
+  app.get('/', function(req, res) {
+      res.render('index');
+  });
+
+  app.get('/partials/:name', function(req, res) {
+      res.render('partials/' + req.params.name);
+  });
+
+  app.get('/api/contacts', function(req, res) {
+    Contact.find(function(err, contacts) {
+      if (err) console.log('err getting contacts: ' + JSON.stringify(err));
+      res.json(contacts);
     });
-}); 
+  });
 
-app.post('/api/updatecontact/:id', function(req, res) {
-    collection.update({ _id: BSON.ObjectID(req.params.id) }, req.body, {safe:true},
-        function(err, docs) {
-            if (err) console.warn(err.message);
-            else console.log('successfully updated');
-            res.json(err ? false : docs[0]);
-      });
-});  
-
-app.post('/api/deletecontact/:id', function(req, res) {    
-    collection.remove({ _id: BSON.ObjectID(req.params.id) }, function(err, docs) {
-        res.json(err ? false : true);
+  app.post('/api/addcontact', function(req, res) {
+    var c = new Contact({
+      name      : req.body.name,
+      email     : req.body.email,
+      phone     : req.body.phone,
+      location  : req.body.location
     });
-});   
 
-// Start the server
-app.listen(8080, function(){
-  console.log("server listening on port %d in %s mode", this.address().port, app.settings.env);
+    c.save(function(err, c) {
+      if (err) 
+        console.log('failure: ' + JSON.stringify(err));
+      
+      res.json(c);
+    });
+  });
+
+  app.put('/api/updatecontact/:id', function(req, res) {
+    Contact.findById(req.params.id, function(err, c) {
+      if (err)
+      {
+        console.log('cant find contact: ' + JSON.stringify(err));
+        res.send('error');
+      }
+      else
+      {
+        c.name = req.body.name;
+        c.email = req.body.email;
+        c.phone = req.body.phone;
+        c.location = req.body.location;
+
+        c.save(function(err, c) {
+          if (err) 
+            console.log('cant save contact: ' + JSON.stringify(err));
+          
+          res.json(c);
+        });
+      }
+    });
+  });  
+
+  app.post('/api/deletecontact/:id', function(req, res) {   
+    Contact.remove({_id: req.params.id}, function(err) {
+      if (err) 
+        console.log('cant remove contact: ' + JSON.stringify(err));
+        
+      res.send(err);
+    });
+  });   
+
+  // Start the server
+  app.listen(config.port, function(){
+    console.log("server started!\n  %s mode\n  port %d\n----------", app.settings.env, this.address().port);
+  });
+
 });
